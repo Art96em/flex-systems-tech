@@ -34,6 +34,13 @@ const moviesSlice = createSlice({
 
       state.loading = true;
       if (category) state.currentCategory = category;
+
+      if (state.currentCategory === "popular") {
+        state.popular = [];
+      } else {
+        state.airingNow = [];
+      }
+
       state.error = null;
       state.page = page;
     },
@@ -62,12 +69,11 @@ const moviesSlice = createSlice({
 
       state.loading = true;
       state.error = null;
+      state.selectedMovie = null;
     },
 
     fetchMovieSuccess(state, action) {
       state.loading = false;
-
-      console.log(action);
 
       state.selectedMovie = action.payload.data;
     },

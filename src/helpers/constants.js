@@ -10,3 +10,5 @@ export const TABS = [
   { label: "Airing Now", value: "airingNow", order: 1 },
   { label: "My Favorites", value: "favorites", order: 2 },
 ];
+
+export const IMAGE_BASE = "https://image.tmdb.org/t/p/original";

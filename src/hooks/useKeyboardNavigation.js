@@ -60,28 +60,22 @@ export const useKeyboardNavigation = () => {
       }
 
       if (e.key === "ArrowRight") {
-        setActiveIndex((prev) =>
-          Math.min(
-            prev + 1,
-            activeZone === ZONES.TABS
-              ? 3
-              : activeZone === ZONES.GRID
-                ? movies.length - 1
-                : paginationRef.current.querySelectorAll('[type="button"]')
-                    .length - 1,
-          ),
-        );
+        if (activeZone !== ZONES.SEARCH)
+          setActiveIndex((prev) =>
+            Math.min(
+              prev + 1,
+              activeZone === ZONES.TABS
+                ? 3
+                : activeZone === ZONES.GRID
+                  ? movies.length - 1
+                  : paginationRef.current.querySelectorAll('[type="button"]')
+                      .length - 1,
+            ),
+          );
       }
 
       if (e.key === "ArrowLeft") {
         setActiveIndex((prev) => Math.max(prev - 1, 0));
-      }
-
-      if (e.key === "Enter") {
-        if (activeZone === ZONES.TABS) {
-        } else if (activeZone === ZONES.GRID) {
-          navigate(`/movie/${movies[activeIndex].id}`);
-        }
       }
     };
 

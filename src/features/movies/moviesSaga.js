@@ -6,6 +6,7 @@ import {
   takeLatest,
   throttle,
 } from "redux-saga/effects";
+
 import {
   fetchMovieFailure,
   fetchMovieRequest,
@@ -78,7 +79,7 @@ function* fetchMovieWorker(action) {
 function* fetchQueryWorker() {
   const { searchQuery } = yield select((state) => state.movies);
 
-  if (!searchQuery || searchQuery.length < 2) return;
+  if (searchQuery && searchQuery.length < 2) return;
 
   yield put(fetchMoviesRequest({ page: 1 }));
 }

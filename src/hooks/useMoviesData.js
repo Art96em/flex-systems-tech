@@ -42,8 +42,12 @@ export const useMoviesData = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchMoviesRequest({ page: 1 }));
-  }, [dispatch]);
+    console.log('change category');
+    
+    if (!movies.length && currentCategory !== "favorites") {
+      changeCategory(currentCategory);
+    }
+  }, []);
 
   return {
     movies,

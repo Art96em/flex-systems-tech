@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, memo } from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -11,39 +11,57 @@ import {
 
 const FALLBACK_IMAGE = "/no-image.jpg";
 
-const MovieCard = forwardRef(
-  ({ id, title, backdrop_path, isActive, ...props }, ref) => {    
+const MovieCard = memo(
+  forwardRef(({ id, title, backdrop_path, ...props }, ref) => {
+    const imageSrc = backdrop_path
+      ? `https://image.tmdb.org/t/p/w342${backdrop_path}`
+      : FALLBACK_IMAGE;
+
     return (
-      <Card sx={{ maxWidth: 345 }}>
+      <Card
+        sx={{
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          transition: "0.2s",
+
+          "&:focus-within": {
+            boxShadow: "0 0 0 3px #ff9800",
+          },
+        }}
+      >
         <CardActionArea
-          // ref={ref}
-          // tabIndex={-1}
           {...props}
           component={Link}
-          to={"/movie/" + id}
-          // data-active={isActive ? "" : null}
+          to={`/movie/${id}`}
           sx={{
             height: "100%",
-            "&[data-active]": {
-              outline: "3px solid #1976d2",
-            },
           }}
         >
           <CardMedia
-            sx={{ aspectRatio: "16 / 9" }}
             component="img"
-            src={
-              backdrop_path
-                ? "https://image.tmdb.org/t/p/w500" + backdrop_path
-                : FALLBACK_IMAGE
-            }
+            loading="lazy"
+            decoding="async"
+            sx={{ aspectRatio: "16 / 9" }}
+            src={imageSrc}
             alt={title}
           />
-          <CardHeader title={title} />
+
+          <CardHeader
+            title={title}
+            slotProps={{
+              title: {
+                sx: {
+                  fontSize: "clamp(1rem, 2vw, 2rem)",
+                  fontWeight: 500,
+                },
+              },
+            }}
+          />
         </CardActionArea>
       </Card>
     );
-  },
+  }),
 );
 
 export default MovieCard;
