@@ -42,8 +42,6 @@ const HomePage = () => {
 
   const handleTabChange = useCallback(
     (event, newIndex) => {
-      console.log("handleTabChange");
-
       event.stopPropagation();
       const newCategory = TABS[newIndex].value;
       changeCategory(newCategory);

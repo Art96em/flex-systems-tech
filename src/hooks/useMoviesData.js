@@ -42,8 +42,6 @@ export const useMoviesData = () => {
   };
 
   useEffect(() => {
-    console.log('change category');
-    
     if (!movies.length && currentCategory !== "favorites") {
       changeCategory(currentCategory);
     }

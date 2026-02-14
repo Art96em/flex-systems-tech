@@ -23,7 +23,27 @@ import {
   fetchSeachMoviesApi,
 } from "./moviesApi";
 
+const REQUEST_LIMIT = 5;
+const WINDOW_SIZE = 10000;
+
+let requestTimestamps = [];
+
 function* fetchPopularWorker(action) {
+  const now = Date.now();
+
+  requestTimestamps = requestTimestamps.filter(
+    (timestamp) => now - timestamp < WINDOW_SIZE,
+  );
+
+  if (requestTimestamps.length >= REQUEST_LIMIT) {
+    yield put(
+      fetchMoviesFailure("Rate limit exceeded: max 5 requests per 10 seconds"),
+    );
+    return;
+  }
+
+  requestTimestamps.push(now);
+
   try {
     const { page } = action.payload;
 
@@ -36,9 +56,9 @@ function* fetchPopularWorker(action) {
     if (searchQuery) {
       response = yield call(fetchSeachMoviesApi, page, searchQuery);
     } else if (currentCategory === "popular") {
-      response = yield call(fetchPopularMoviesApi, page, searchQuery);
+      response = yield call(fetchPopularMoviesApi, page);
     } else if (currentCategory === "airingNow") {
-      response = yield call(fetchAiringMoviesApi, page, searchQuery);
+      response = yield call(fetchAiringMoviesApi, page);
     }
 
     yield put(
@@ -64,7 +84,7 @@ function* fetchMovieWorker(action) {
 
     yield put(
       fetchMovieSuccess({
-        data: response.data, // TODO
+        data: response.data,
       }),
     );
   } catch (error) {
@@ -86,6 +106,6 @@ function* fetchQueryWorker() {
 
 export default function* moviesSaga() {
   yield takeLatest(fetchMovieRequest.type, fetchMovieWorker);
-  yield throttle(2000, fetchMoviesRequest.type, fetchPopularWorker);
+  yield takeLatest(fetchMoviesRequest.type, fetchPopularWorker);
   yield debounce(500, setSearchQuery.type, fetchQueryWorker);
 }
