@@ -1,16 +1,108 @@
-# React + Vite
+# Movie Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based movie browsing application with keyboard navigation,
+search, pagination and rate-limited API requests.
 
-Currently, two official plugins are available:
+------------------------------------------------------------------------
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+-   Movie search with debounce
+-   Browse by categories (Popular, Airing Now, Favorites)
+-   Full keyboard navigation (search, grid, pagination)
+-   Movie details page
+-   Custom API rate limiting (5 requests per 10 seconds)
+-   Optimized Redux-Saga flow (takeLatest, debounce)
+-   Clean architecture with separation of concerns
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+------------------------------------------------------------------------
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-   React
+-   Redux Toolkit
+-   Redux-Saga
+-   React Router
+-   Material UI
+-   Axios
+
+------------------------------------------------------------------------
+
+## Architecture Highlights
+
+### Redux-Saga Side Effects
+
+-   `takeLatest` for page navigation
+-   `debounce` for search
+-   Centralized API handling
+-   Custom rate limiting implementation
+
+### Keyboard Navigation System
+
+Custom hook `useKeyboardNavigation`:
+
+-   Zone-based navigation model
+-   Declarative state transitions
+-   Focus management
+-   Grid navigation with arrow keys
+
+------------------------------------------------------------------------
+
+## Project Structure
+
+src/ 
+  ├── app/
+  │ ├── rootReducer.js
+  │ ├── rootSaga.js
+  │ └── store.js
+  ├── components/
+  │ └── no-image.jpg
+  ├── components/
+  │ ├── MovieCard.js
+  │ ├── MovieDetailsButtons.js
+  │ ├── MoviesGrid.js
+  │ ├── MoviesPagination.js
+  │ ├── MoviesSearch.js
+  │ ├── MoviesTabs.js
+  │ └── ProductionCompanies.js
+  ├── features/
+  │ ├── favorites/
+  │ │ ├── favoritesSaga.js
+  │ │ └── favoritesSlice.js
+  │ └── movies/
+  │   ├── moviesSlice.js
+  │   ├── moviesSaga.js
+  │   └── moviesApi.js
+  ├── hooks/
+  │ ├── useMoviesData.js
+  │ └── useKeyboardNavigation.js
+  ├── pages/
+  │ ├── HomePage.jsx
+  │ └── MovieDetailsPage.jsx
+  └── routes/
+    └── AppRouter.jsx
+
+------------------------------------------------------------------------
+
+## Installation
+
+``` bash
+git clone https://github.com/Art96em/flex-systems-tech.git
+cd movie-explorer
+npm install
+npm run dev
+```
+
+------------------------------------------------------------------------
+
+## Environment Variables
+
+Create `.env` file:
+
+    VITE_TMDB_API_KEY=your_api_key_here
+
+------------------------------------------------------------------------
+
+## 👨‍💻 Author
+
+Artem Volkov

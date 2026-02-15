@@ -17,7 +17,6 @@ export const useKeyboardNavigation = () => {
   }, [currentCategory]);
 
   const getMaxIndex = useCallback(() => {
-    if (activeZone === ZONES.TABS) return TABS.length - 1;
     if (activeZone === ZONES.GRID) return movies.length - 1;
 
     if (activeZone === ZONES.PAGINATION) {
@@ -70,8 +69,6 @@ export const useKeyboardNavigation = () => {
   const transitions = {
     [ZONES.TABS]: {
       ArrowDown: () => setActiveZone(ZONES.SEARCH),
-      ArrowRight: moveRight,
-      ArrowLeft: moveLeft,
     },
 
     [ZONES.SEARCH]: {

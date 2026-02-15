@@ -26,6 +26,12 @@ const MoviesTabs = memo(
             backgroundColor: "#ff9800",
           },
         }}
+        onKeyDown={(e) => {
+          if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }}
       >
         {tabs.map((tab, index) => (
           <Tab
