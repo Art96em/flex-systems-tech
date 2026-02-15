@@ -5,6 +5,7 @@ import {
   fetchMoviesRequest,
   setCategory,
 } from "../features/movies/moviesSlice";
+import { CATEGORIES } from "../helpers/constants";
 
 export const useMoviesData = () => {
   const dispatch = useDispatch();
@@ -32,7 +33,7 @@ export const useMoviesData = () => {
   const changeCategory = (category) => {
     dispatch(setCategory(category));
 
-    if (category !== "favorites") {
+    if (category !== CATEGORIES.FAVORITES) {
       dispatch(fetchMoviesRequest({ page: 1, category }));
     }
   };
@@ -42,7 +43,7 @@ export const useMoviesData = () => {
   };
 
   useEffect(() => {
-    if (!movies.length && currentCategory !== "favorites") {
+    if (!movies.length && currentCategory !== CATEGORIES.FAVORITES) {
       changeCategory(currentCategory);
     }
   }, []);

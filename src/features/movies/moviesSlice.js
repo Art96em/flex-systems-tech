@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { CATEGORIES } from "../../helpers/constants";
 
 const initialState = {
   popular: [],
   airingNow: [],
-  currentCategory: "popular",
+  currentCategory: CATEGORIES.POPULAR,
   page: 1,
   totalPages: 1,
   loading: false,
@@ -17,6 +18,7 @@ const moviesSlice = createSlice({
   initialState,
   reducers: {
     setCategory(state, action) {
+      state.searchQuery = "";
       state.currentCategory = action.payload;
       state.page = 1;
     },
@@ -35,7 +37,7 @@ const moviesSlice = createSlice({
       state.loading = true;
       if (category) state.currentCategory = category;
 
-      if (state.currentCategory === "popular") {
+      if (state.currentCategory === CATEGORIES.POPULAR) {
         state.popular = [];
       } else {
         state.airingNow = [];
@@ -49,6 +51,10 @@ const moviesSlice = createSlice({
       state.loading = false;
 
       const { results, totalPages } = action.payload;
+
+      if (results.length === 0) {
+        state.error = `Nothing found ${state.searchQuery ? `by query "${state.searchQuery}"` : ""}`;
+      }
 
       if (state.currentCategory === "popular") {
         state.popular = results;
@@ -65,8 +71,6 @@ const moviesSlice = createSlice({
     },
 
     fetchMovieRequest(state, action) {
-      const { id } = action.payload;
-
       state.loading = true;
       state.error = null;
       state.selectedMovie = null;

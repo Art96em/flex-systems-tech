@@ -1,4 +1,4 @@
-import { useEffect, useRef, memo } from "react";
+import { useEffect, memo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
@@ -28,8 +28,6 @@ const MovieDetailsPage = () => {
 
   const movie = useSelector((state) => state.movies.selectedMovie);
 
-  const containerRef = useRef(null);
-
   useEffect(() => {
     if (id) {
       dispatch(fetchMovieRequest({ id }));
@@ -40,7 +38,6 @@ const MovieDetailsPage = () => {
 
   return (
     <Box
-      ref={containerRef}
       tabIndex={0}
       sx={{
         minHeight: "100vh",

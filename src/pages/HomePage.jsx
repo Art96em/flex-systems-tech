@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Container, Box, Alert, Button } from "@mui/material";
 
-import { TABS } from "../helpers/constants";
+import { CATEGORIES, TABS } from "../helpers/constants";
 import { useMoviesData } from "../hooks/useMoviesData";
 import { setSearchQuery } from "../features/movies/moviesSlice";
 import { useKeyboardNavigation } from "../hooks/useKeyboardNavigation";
@@ -33,21 +33,15 @@ const HomePage = () => {
 
   const tabTimeoutRef = useRef(null);
 
-  const handlePageChange = useCallback(
-    (_, newPage) => {
-      changePage(newPage);
-    },
-    [changePage],
-  );
+  const handlePageChange = useCallback((_, newPage) => {
+    changePage(newPage);
+  }, []);
 
-  const handleTabChange = useCallback(
-    (event, newIndex) => {
-      event.stopPropagation();
-      const newCategory = TABS[newIndex].value;
-      changeCategory(newCategory);
-    },
-    [changeCategory],
-  );
+  const handleTabChange = useCallback((event, newIndex) => {
+    event.stopPropagation();
+    const newCategory = TABS[newIndex].value;
+    changeCategory(newCategory);
+  }, []);
 
   const handleSearchChange = useCallback(
     (e) => {
@@ -69,11 +63,11 @@ const HomePage = () => {
 
       tabTimeoutRef.current = setTimeout(() => {
         const category = TABS[index].value;
-        if (category !== "favorites" && category !== currentCategory)
+        if (category !== CATEGORIES.FAVORITES && category !== currentCategory)
           changeCategory(category);
       }, 2000);
     },
-    [changeCategory, currentCategory],
+    [currentCategory],
   );
 
   return (
@@ -138,7 +132,7 @@ const HomePage = () => {
         )}
       </Box>
 
-      {currentCategory !== "favorites" && (
+      {currentCategory !== CATEGORIES.FAVORITES && (
         <MoviesPagination
           page={page}
           totalPages={totalPages}

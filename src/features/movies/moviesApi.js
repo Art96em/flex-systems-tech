@@ -32,7 +32,7 @@ export const fetchMovieApi = (id) =>
     },
   });
 
-export const fetchSeachMoviesApi = (page = 1, query = "") =>
+export const fetchSearchMoviesApi = (page = 1, query = "") =>
   api.get("/search/movie", {
     params: {
       api_key: API_KEY,

@@ -1,11 +1,4 @@
-import {
-  call,
-  debounce,
-  put,
-  select,
-  takeLatest,
-  throttle,
-} from "redux-saga/effects";
+import { call, debounce, put, select, takeLatest } from "redux-saga/effects";
 
 import {
   fetchMovieFailure,
@@ -20,33 +13,48 @@ import {
   fetchMovieApi,
   fetchPopularMoviesApi,
   fetchAiringMoviesApi,
-  fetchSeachMoviesApi,
+  fetchSearchMoviesApi,
 } from "./moviesApi";
+import { CATEGORIES } from "../../helpers/constants";
 
 const REQUEST_LIMIT = 5;
 const WINDOW_SIZE = 10000;
 
 let requestTimestamps = [];
 
-function* fetchPopularWorker(action) {
+const apiMap = {
+  [CATEGORIES.POPULAR]: fetchPopularMoviesApi,
+  [CATEGORIES.AIRING_NOW]: fetchAiringMoviesApi,
+};
+
+function isRateLimited() {
   const now = Date.now();
 
-  requestTimestamps = requestTimestamps.filter(
-    (timestamp) => now - timestamp < WINDOW_SIZE,
-  );
-
   if (requestTimestamps.length >= REQUEST_LIMIT) {
-    yield put(
-      fetchMoviesFailure("Rate limit exceeded: max 5 requests per 10 seconds"),
-    );
-    return;
+    const oldestRequest = requestTimestamps[0];
+
+    if (now - oldestRequest < WINDOW_SIZE) {
+      return true;
+    }
+
+    requestTimestamps.shift();
   }
 
   requestTimestamps.push(now);
+  return false;
+}
 
+function* callWithRateLimit(apiFn, ...args) {
+  if (isRateLimited()) {
+    throw new Error("Rate limit exceeded");
+  }
+
+  return yield call(apiFn, ...args);
+}
+
+function* fetchMoviesWorker(action) {
   try {
     const { page } = action.payload;
-
     const { currentCategory, searchQuery } = yield select(
       (state) => state.movies,
     );
@@ -54,11 +62,14 @@ function* fetchPopularWorker(action) {
     let response;
 
     if (searchQuery) {
-      response = yield call(fetchSeachMoviesApi, page, searchQuery);
-    } else if (currentCategory === "popular") {
-      response = yield call(fetchPopularMoviesApi, page);
-    } else if (currentCategory === "airingNow") {
-      response = yield call(fetchAiringMoviesApi, page);
+      response = yield callWithRateLimit(
+        fetchSearchMoviesApi,
+        page,
+        searchQuery,
+      );
+    } else {
+      const api = apiMap[currentCategory];
+      response = yield callWithRateLimit(api, page);
     }
 
     yield put(
@@ -70,7 +81,9 @@ function* fetchPopularWorker(action) {
   } catch (error) {
     yield put(
       fetchMoviesFailure(
-        error.response?.data?.status_message || "Something went wrong",
+        error.message ||
+          error.response?.data?.status_message ||
+          "Something went wrong",
       ),
     );
   }
@@ -106,6 +119,6 @@ function* fetchQueryWorker() {
 
 export default function* moviesSaga() {
   yield takeLatest(fetchMovieRequest.type, fetchMovieWorker);
-  yield takeLatest(fetchMoviesRequest.type, fetchPopularWorker);
+  yield takeLatest(fetchMoviesRequest.type, fetchMoviesWorker);
   yield debounce(500, setSearchQuery.type, fetchQueryWorker);
 }

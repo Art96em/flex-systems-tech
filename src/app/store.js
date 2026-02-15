@@ -1,14 +1,15 @@
-import { configureStore } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import { createLogger } from "redux-logger";
+import { configureStore } from "@reduxjs/toolkit";
 
 import rootReducer from "./rootReducer";
 import rootSaga from "./rootSaga";
 import { setFavorites } from "../features/favorites/favoritesSlice";
+import { CATEGORIES } from "../helpers/constants";
 
 const loadFavoritesFromStorage = () => {
   try {
-    const data = localStorage.getItem("favorites");
+    const data = localStorage.getItem(CATEGORIES.FAVORITES);
     return data ? JSON.parse(data) : [];
   } catch {
     return [];
