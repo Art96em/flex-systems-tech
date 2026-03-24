@@ -13,7 +13,10 @@ import MoviesGrid from "../components/MoviesGrid";
 import MoviesSearch from "../components/MoviesSearch";
 import MoviesPagination from "../components/MoviesPagination";
 
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+
 const HomePage = () => {
+  console.log(API_KEY)
   const dispatch = useDispatch();
   const searchQuery = useSelector((state) => state.movies.searchQuery);
 
