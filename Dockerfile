@@ -1,5 +1,8 @@
 FROM node:20 as build
 
+ARG VITE_TMDB_API_KEY
+ENV VITE_TMDB_API_KEY=$VITE_TMDB_API_KEY
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -7,7 +10,6 @@ RUN npm install
 
 COPY . .
 RUN npm run build
-
 
 FROM nginx:alpine
 
