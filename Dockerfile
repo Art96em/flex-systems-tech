@@ -1,25 +1,27 @@
-FROM node:20 as build
-
-ARG VITE_TMDB_API_KEY
-ENV VITE_TMDB_API_KEY=$VITE_TMDB_API_KEY
+FROM node:20-alpine as build
 
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY . .
 
-RUN ls -la
-
-RUN echo "API=$VITE_TMDB_API_KEY"
-
 RUN npm run build
 
+# ---------- RUNTIME ----------
 FROM nginx:alpine
 
+# nginx templates support
+ENV NGINX_ENVSUBST_OUTPUT_DIR=/usr/share/nginx/html
+ENV NGINX_ENVSUBST_TEMPLATE_SUFFIX=.template
+ENV PORT=80
+
+# copy build
 COPY --from=build /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+# runtime templates
+COPY config.js.template /usr/share/nginx/html/config.js.template
 
-CMD ["nginx", "-g", "daemon off;"]
+# custom nginx config template
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
