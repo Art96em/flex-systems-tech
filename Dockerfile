@@ -9,6 +9,11 @@ COPY package*.json ./
 RUN npm install
 
 COPY . .
+
+RUN ls -la
+
+RUN echo "API=$VITE_TMDB_API_KEY"
+
 RUN npm run build
 
 FROM nginx:alpine

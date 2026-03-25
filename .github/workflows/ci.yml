@@ -63,6 +63,7 @@ jobs:
       - name: Build image
         run: |
           docker build \
+          --build-arg VITE_TMDB_API_KEY=${{ secrets.VITE_TMDB_API_KEY }} \
           -t ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:latest \
           -t ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.TAG }} \
           .
