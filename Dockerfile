@@ -16,7 +16,7 @@ FROM nginx:alpine
 COPY --from=build /app/dist /usr/share/nginx/html
 
 # template для runtime config
-COPY config.js.template /usr/share/nginx/html/config.js.template
+COPY config.js.template /usr/share/nginx/html/config.template.js
 
 # entrypoint
 COPY docker-entrypoint.sh /entrypoint.sh
