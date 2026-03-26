@@ -1,6 +1,8 @@
 import { useRef, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import { config } from "../config";
+
 import { Container, Box, Alert, Button } from "@mui/material";
 
 import { CATEGORIES, TABS } from "../helpers/constants";
@@ -13,10 +15,10 @@ import MoviesGrid from "../components/MoviesGrid";
 import MoviesSearch from "../components/MoviesSearch";
 import MoviesPagination from "../components/MoviesPagination";
 
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+const API_KEY = config.TMDB_API_KEY;
 
 const HomePage = () => {
-  console.log(API_KEY)
+  console.log(API_KEY);
   const dispatch = useDispatch();
   const searchQuery = useSelector((state) => state.movies.searchQuery);
 
